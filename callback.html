@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>JS Async - Callback</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+  <button type="button" onclick='say()'>Click Me</button>
+
+  <script>
+    function helloWorld(){
+      console.log('Hello World')
+    };
+
+    /* function say(){
+      // dijalankan secara synchronous
+      helloWorld()
+      console.log('suksess klik button')
+    }
+
+    function say(){
+      // setTimeout akan menjalankan-kode nya secara Asynchronous
+      setTimeout(()=>{
+        helloWorld()
+      },3000),
+        console.log('suksess klik button')
+    } */
+
+    function say(){
+      // code ini juga Async
+      setInterval(()=>{
+        helloWorld()
+      },3000);
+      console.log('Sukses Click Button')
+    }
+  </script>
+  </body>
+</html>
