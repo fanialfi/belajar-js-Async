@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>AJAX</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+  <script>
+    function getProductsUrl(keyword) {
+      return `https://www.blibli.com/backend/search/products?searchTerm=${keyword}`;
+    }
+    function searchProducts(keyword) {
+      // code ajax here
+      const ajax = new XMLHttpRequest();
+      url = getProductsUrl(keyword);
+      ajax.open("GET", url);
+      ajax.send();
+
+      // tidak bisa dilakukan secara sync
+      // const response = JSON.parse(ajax.responseText);
+      // console.log(response);
+
+      // mengakali
+      setTimeout(() => {
+        const response = JSON.parse(ajax.responseText);
+        console.log(response);
+      }, 3000);
+    }
+    function buttonClick() {
+      searchProducts(document.getElementById("keyword").value);
+    }
+  </script>
+  <input type="text" id="keyword" />
+  <button type="button" onclick="buttonClick()">Search Products</button>
+</body>
+
+</html>
