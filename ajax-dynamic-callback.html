@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>AJAX dynamic error callback</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+  <script>
+    function getProductsUrl(keyword) {
+      return `https://www.blibli.com/backend/search/products?searchTerm=${keyword}`;
+    }
+    function searchProducts(keyword, callbackSuccess, callbackError) {
+      // code ajax here
+      const ajax = new XMLHttpRequest();
+
+      // ajax callback
+      ajax.onload = function () {
+        if (ajax.status === 200) {
+          const data = JSON.parse(ajax.responseText);
+          callbackSuccess(data);
+        } else {
+          callbackError();
+        }
+      };
+      url = getProductsUrl(keyword);
+      ajax.open("GET", url);
+      ajax.send();
+
+      // tidak bisa dilakukan secara sync
+      // const response = JSON.parse(ajax.responseText);
+      // console.log(response);
+    }
+    function errorGetProducts() {
+      console.warn("Error Get Products");
+      alert("Error Get Products");
+    }
+    function clearProducts() {
+      const productUl = document.getElementById("products");
+
+      productUl.textContent = "";
+    }
+    function displayProducts(data) {
+      data.data.products.forEach((product) => {
+        displayProduct(product);
+      });
+    }
+    function displayProduct(product) {
+      const productLi = document.createElement("li");
+      productLi.textContent = product.name;
+
+      const productUl = document.getElementById("products");
+      productUl.append(productLi);
+    }
+    function buttonClick() {
+      searchProducts(
+        document.getElementById("keyword").value,
+        function (data) {
+          clearProducts();
+          displayProducts(data);
+          console.log(`
+            success search product
+            disini bila menggunakan dynamic callback bisa banyak pilihan yang akan dilakukan
+            `);
+        },
+        function () {
+          errorGetProducts();
+          console.log("ERROR");
+        }
+      );
+      console.log("Success Click Button");
+    }
+  </script>
+  <input type="text" id="keyword" />
+  <button type="button" onclick="buttonClick()">Search Products</button>
+  <ul id="products"></ul>
+</body>
+
+</html>
