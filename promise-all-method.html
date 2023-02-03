@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>promise all method</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+  <script>
+    function getProductsUrl(keyword) {
+      return `https://www.blibli.com/backend/search/products?searchTerm=${keyword}`;
+    }
+    function searchProducts(keyword) {
+      // code promise here
+      const promise = new Promise(function (resolve, reject) {
+        // code async
+        const ajax = new XMLHttpRequest();
+        ajax.onload = function () {
+          if (ajax.status === 200) {
+            const data = JSON.parse(ajax.responseText);
+            resolve(data);
+          } else {
+            reject(Error("Gagal mengambil data product"));
+          }
+        };
+        const url = getProductsUrl(keyword);
+        ajax.open("GET", url);
+        ajax.send();
+      });
+      return promise;
+
+      // tidak bisa dilakukan secara sync
+      // const response = JSON.parse(ajax.responseText);
+      // console.log(response);
+    }
+    function clearProducts() {
+      const productUl = document.getElementById("products");
+
+      productUl.textContent = "";
+    }
+    function displayProducts(data) {
+      data.data.products.forEach((product) => {
+        displayProduct(product);
+      });
+    }
+    function displayProduct(product) {
+      const productLi = document.createElement("li");
+      productLi.textContent = product.name;
+
+      const productUl = document.getElementById("products");
+      productUl.append(productLi);
+    }
+    function buttonClick() {
+      // const promise = searchProducts(
+      //   document.getElementById("keyword").value
+      // );
+      // promise
+      //   .then(function (value) {
+      //     return value.data.products;
+      //   })
+      //   .then(function (products) {
+      //     clearProducts();
+      //     products.forEach(function (product) {
+      //       displayProduct(product);
+      //     });
+      //   })
+      //   .then(function (result) { // then dihasilkan ketika callback success
+      //     console.log(result); // undefined karena then method sebelumnya tidak me-return atau mengembalikan data apapun
+      //   })
+      //   .catch(function (error) { // dijalankan ketika callback gagal
+      //     alert(error.message);
+      //   });
+      const promise1 = searchProducts(
+        document.getElementById("keyword").value
+      );
+      const promise2 = searchProducts(
+        document.getElementById("keyword1").value
+      );
+      const promise3 = searchProducts(
+        document.getElementById("keyword2").value
+      );
+
+      Promise.all([promise1, promise2, promise3])
+        .then(function (value) {
+          return value.map((products) => products.data.products);
+        })
+        .then(function (values) {
+          clearProducts();
+          values.forEach(function (products) {
+            products.forEach(function (product) {
+              displayProduct(product);
+            });
+          });
+        })
+        .catch(function (error) {
+          console.log(error.message);
+        })
+        .finally(function () {
+          console.log("Suksess Mengelola Semua Promise");
+        });
+    }
+  </script>
+  <input type="text" id="keyword" placeholder="input 1" />
+  <input type="text" id="keyword1" placeholder="input 2" />
+  <input type="text" id="keyword2" placeholder="input 3" />
+  <button type="button" onclick="buttonClick()">Search Products</button>
+  <ul id="products"></ul>
+</body>
+
+</html>
